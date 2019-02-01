@@ -102,3 +102,24 @@ brca1scan.constraints <- apply(brca1scan.data.frame,1,genescan.processing.functi
 brca1scan.data.frame <- bind.constraints.function(brca1scan.data.frame,brca1scan.constraints)
 nf1scan.constraints <- apply(nf1scan.data.frame,1,genescan.processing.function,genedetails,"NF1")
 nf1scan.data.frame <- bind.constraints.function(nf1scan.data.frame,nf1scan.constraints)
+
+#Calculate correlations between gene constraint and regional constraint
+window.15bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'])
+window.30bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'])
+window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X60_Constraint_Normalised'])
+window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X90_Constraint_Normalised'])
+
+#Draw plot of local constraints at different window sizes
+png("variantslocalconstraints.png")
+par(mfrow=c(2,3))
+par(oma=c(4,4,0,0)) 
+par(mar=c(2,2,1,1))
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'],xlab='',ylab='',main="1")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'],xlab='',ylab='',main="2")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X60_Constraint_Normalised'],xlab='',ylab='',main="3")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X90_Constraint_Normalised'],xlab='',ylab='',main="4")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'],xlab='',ylab='',main="5")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'],xlab='',ylab='',main="5")
+mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2)
+mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2)
+dev.off()
