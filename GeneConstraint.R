@@ -23,10 +23,10 @@ variants.processing.function <- function(x,genedetails)
   {
   #Retrieve the details about the gene
   wholegenesize <- genedetails[x['Gene'],'Size']
-  adjustmentfactor <- 1
+  adjustmentfactor <- [gene,'Adjustment_Factor']
   
   #Calculate the unnormalised constraint metrics
-  constraint.gene <- constraint.function(x['Gene_Observed'],x['Gene_Expected'],adjustmentfactor)
+  constraint.gene <- constraint.function(genedetails[x['Gene'],'Observed'],genedetails[x['Gene'],'Expected'],adjustmentfactor)
   constraint.X15 <- constraint.function(x['X15_Observed'],x['X15_Expected'],adjustmentfactor)
   constraint.X30 <- constraint.function(x['X30_Observed'],x['X30_Expected'],adjustmentfactor)
   constraint.X60 <- constraint.function(x['X60_Observed'],x['X60_Expected'],adjustmentfactor)
@@ -48,7 +48,7 @@ genescan.processing.function <- function(x,genedetails,gene)
   {
   #Retrieve the details about the gene
   wholegenesize <- genedetails[gene,'Size']
-  adjustmentfactor <- 1
+  adjustmentfactor <- [gene,'Adjustment_Factor']
   
   #Calculate the unnormalised constraint metrics
   constraint.X15 <- constraint.function(x['X15_Observed'],x['X15_Expected'],adjustmentfactor)
@@ -83,7 +83,7 @@ bind.constraints.function <- function(array,constraints)
   }
 
 #Import the list of gene sizes
-genedetails <- read.table("GeneSizes.txt", header=TRUE)
+genedetails <- read.table("GeneDetails.txt", header=TRUE)
 
 #Import the list of variants
 variants.data.frame <- read.table("Variants.txt", header=TRUE)
@@ -110,16 +110,14 @@ window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.
 window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X90_Constraint_Normalised'])
 
 #Draw plot of local constraints at different window sizes
-png("variantslocalconstraints.png")
-par(mfrow=c(2,3))
+png("variantslocalconstraints.png",width=720,height=720)
+par(mfrow=c(2,2))
 par(oma=c(4,4,0,0)) 
 par(mar=c(2,2,1,1))
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'],xlab='',ylab='',main="1")
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'],xlab='',ylab='',main="2")
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X60_Constraint_Normalised'],xlab='',ylab='',main="3")
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X90_Constraint_Normalised'],xlab='',ylab='',main="4")
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'],xlab='',ylab='',main="5")
-plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'],xlab='',ylab='',main="5")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X15_Constraint_Normalised'],xlab='',ylab='',main="+/- 15bp")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X30_Constraint_Normalised'],xlab='',ylab='',main="+/- 30bp")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X60_Constraint_Normalised'],xlab='',ylab='',main="+/- 60bp")
+plot(variants.data.frame[,'Gene_Constraint'],variants.data.frame[,'X90_Constraint_Normalised'],xlab='',ylab='',main="+/- 90bp")
 mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2)
 mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2)
 dev.off()
