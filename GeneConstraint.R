@@ -45,6 +45,61 @@ examplezscores <- function(value)
   return(zscore)
   }
 
+#Generate a gene vs regional variant graph
+variantgraph <- function(x,y,name)
+  {
+  plot(x,y,xlab='',ylab='',main=name)
+  }
+
+#Draw gene scan plot
+genescangraph <- function(gene)
+  {
+  #Declare file name
+  filename = paste(c(gene,"scan.png"),sep="",collapse="")
+  title = paste(c(gene," Regional Constraint Scan"),sep="",collapse="")
+  
+  #Draw gene scan plot of BRCA1
+  png(filename,width=1080,height=720)
+  plot(
+    variants.data.frame[,'Position']
+    [variants.data.frame['Type'] == 'S15bp' & variants.data.frame['Gene'] == gene]
+    ,variants.data.frame[,'Normalised_Constraint']
+    [variants.data.frame['Type'] == 'S15bp' & variants.data.frame['Gene'] == gene]
+    ,type='l'
+    ,xlab='Position'
+    ,ylab='Local Constraint'
+    ,main=title
+    ,lwd=2,col="yellow"
+  )
+  lines(
+    variants.data.frame[,'Position']
+    [variants.data.frame['Type'] == 'S30bp' & variants.data.frame['Gene'] == gene]
+    ,variants.data.frame[,'Normalised_Constraint']
+    [variants.data.frame['Type'] == 'S30bp' & variants.data.frame['Gene'] == gene]
+    ,lwd=2,col="blue"
+  )
+  lines(
+    variants.data.frame[,'Position']
+    [variants.data.frame['Type'] == 'S60bp' & variants.data.frame['Gene'] == gene]
+    ,variants.data.frame[,'Normalised_Constraint']
+    [variants.data.frame['Type'] == 'S60bp' & variants.data.frame['Gene'] == gene]
+    ,lwd=2,col="green"
+  )
+  lines(
+    variants.data.frame[,'Position']
+    [variants.data.frame['Type'] == 'S90bp' & variants.data.frame['Gene'] == gene]
+    ,variants.data.frame[,'Normalised_Constraint']
+    [variants.data.frame['Type'] == 'S90bp' & variants.data.frame['Gene'] == gene]
+    ,lwd=2,col="red"
+  )
+  #Draw 0 line
+  abline(h=0)
+  #Draw horizontal line at the 3SD line for statistical significance
+  abline(h=3.09)
+  legend(legend=c("15bp","30bp","60bp","90bp"),col=c("yellow","blue","green","red"),lwd=c("2","2","2","2"),lty=c(1,1,1,1),"topright")
+  dev.off()
+  }
+  
 #Import the list of gene sizes
 genedetails <- read.table("GeneDetails.txt", header=TRUE)
 
@@ -62,56 +117,27 @@ window.15bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.
 window.30bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V30bp'])
 window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V60bp'])
 window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V90bp'])
+window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'Exon'])
+window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'Domain'])
 
 #Draw plot of local constraints at different window sizes
-png("variantslocalconstraints.png",width=720,height=720)
-par(mfrow=c(2,2))
+png("variantslocalconstraints.png",width=1080,height=720)
+par(mfrow=c(2,3))
 par(oma=c(4,4,0,0)) 
 par(mar=c(2,2,1,1))
-plot(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V15bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V15bp'],xlab='',ylab='',main="+/- 15bp")
-plot(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V30bp'],xlab='',ylab='',main="+/- 30bp")
-plot(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'],xlab='',ylab='',main="+/- 60bp")
-plot(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'],xlab='',ylab='',main="+/- 90bp")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V15bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V15bp'],"+/- 15bp")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V30bp'],"+/- 30bp")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Exon'],"Exon")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'],"+/- 60bp")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'],"+/- 90bp")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Domain'],"Domain")
 mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2)
 mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2)
 dev.off()
 
-#Draw gene scan plot of BRCA1
-png("brca1scan.png",width=1080,height=720)
-plot(
-  variants.data.frame[,'Position']
-  [variants.data.frame['Type'] == 'S15bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,variants.data.frame[,'Normalised_Constraint']
-  [variants.data.frame['Type'] == 'S15bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,type='l'
-  ,xlab='Position'
-  ,ylab='Local Constraint'
-  ,main='BRCA1 Regional Constraint Scan'
-  ,lwd=2,col="yellow"
-  )
-lines(
-  variants.data.frame[,'Position']
-  [variants.data.frame['Type'] == 'S30bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,variants.data.frame[,'Normalised_Constraint']
-  [variants.data.frame['Type'] == 'S30bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,lwd=2,col="blue"
-)
-lines(
-  variants.data.frame[,'Position']
-  [variants.data.frame['Type'] == 'S60bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,variants.data.frame[,'Normalised_Constraint']
-  [variants.data.frame['Type'] == 'S60bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,lwd=2,col="green"
-)
-lines(
-  variants.data.frame[,'Position']
-  [variants.data.frame['Type'] == 'S90bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,variants.data.frame[,'Normalised_Constraint']
-  [variants.data.frame['Type'] == 'S90bp' & variants.data.frame['Gene'] == 'BRCA1']
-  ,lwd=2,col="red"
-)
-legend(legend=c("15bp","30bp","60bp","90bp"),col=c("yellow","blue","green","red"),lwd=c("2","2","2","2"),lty=c(1,1,1,1),"topright")
-dev.off()
+#Make th gene scan plots for BRCA1 and NF1
+genescangraph("BRCA1")
+genescangraph("NF1")
 
 #Make the plot of Z score examples
 size = 100
@@ -119,8 +145,8 @@ zexamples <- data.frame(row.names=c(1:size))
 zexamples$values <- c(1:size)
 zscores <- apply(zexamples,1,examplezscores)
 zexamples$zscore <- zscores
-zexamples
 
+#Plot graph showing that Z score increases as Observed increases
 png("zexamples.png",width=720,height=720)
 plot(
   zexamples[,'values']
@@ -131,3 +157,5 @@ plot(
   ,main='Change in Z Score as Observed Increases'
 )
 dev.off()
+
+subset(variants.data.frame)
