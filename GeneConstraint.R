@@ -26,7 +26,8 @@ variants.processing.function <- function(variant,genedetails)
   #Retrieve the details about the gene
   wholegenesize <- genedetails[variant['Gene'],'Size']
   adjustment <- genedetails[variant['Gene'],'Adjustment']
-  constraint.gene <- genedetails[variant['Gene'],'Constraint']
+  #Constraints in the gene details table are not adjusted
+  constraint.gene <- genedetails[variant['Gene'],'Constraint']*adjustment
   
   constraint.region.raw <- constraint.function(variant['Region_Observed'],variant['Region_Expected'],adjustment)
   
@@ -113,12 +114,12 @@ variants.data.frame$Raw_Constraint <- variants.constraints['Raw_Constraint',]
 variants.data.frame$Normalised_Constraint <- variants.constraints['Normalised_Constraint',]
 
 #Calculate correlations between gene constraint and regional constraint
-window.15bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V15bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V15bp'])
-window.30bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V30bp'])
-window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V60bp'])
-window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'V90bp'])
-window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'Exon'])
-window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Raw_Constraint'][variants.data.frame['Type'] == 'Domain'])
+window.15bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V15bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V15bp'])
+window.30bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V30bp'])
+window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'])
+window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'])
+window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Exon'])
+window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Domain'])
 
 #Draw plot of local constraints at different window sizes
 png("variantslocalconstraints.png",width=1080,height=720)
