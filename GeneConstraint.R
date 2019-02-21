@@ -159,4 +159,90 @@ plot(
 )
 dev.off()
 
-subset(variants.data.frame)
+#Count the numbers of variants and each window size
+v15.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp',])
+v30.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp',])
+v60.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp',])
+v90.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp',])
+exon.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon',])
+domain.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain',])
+
+#Count the number of variants where gene constraint is already >3.09
+v15.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint >= 3.09,])
+v30.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint >= 3.09,])
+v60.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint >= 3.09,])
+v90.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint >= 3.09,])
+exon.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint >= 3.09,])
+domain.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint >= 3.09,])
+
+#Count the number of instances where a local constraint exceeds 3.09, but gene constraint doesn't
+v15.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+v30.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+v60.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+v90.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+exon.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+domain.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+                                           
+v15.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+v30.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+v60.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+v90.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+exon.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+domain.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+
+#Calculate percentages
+v15.relevent.percent.normalised <- round((v15.relevantnormalised.variants/v15.total.variants)*100, digits=3)
+v30.relevent.percent.normalised <- round((v30.relevantnormalised.variants/v30.total.variants)*100, digits=3)
+v60.relevent.percent.normalised <- round((v60.relevantnormalised.variants/v60.total.variants)*100, digits=3)
+v90.relevent.percent.normalised <- round((v90.relevantraw.variants/v90.total.variants)*100, digits=3)
+exon.relevent.percent.normalised <- round((exon.relevantraw.variants/exon.total.variants)*100, digits=3)
+domain.relevent.percent.normalised <- round((domain.relevantraw.variants/domain.total.variants)*100, digits=3)
+
+v15.relevent.percent.raw <- round((v15.relevantraw.variants/v15.total.variants)*100, digits=3)
+v30.relevent.percent.raw <- round((v30.relevantraw.variants/v30.total.variants)*100, digits=3)
+v60.relevent.percent.raw <- round((v60.relevantraw.variants/v60.total.variants)*100, digits=3)
+v90.relevent.percent.raw <- round((v90.relevantraw.variants/v90.total.variants)*100, digits=3)
+exon.relevent.percent.raw <- round((exon.relevantraw.variants/exon.total.variants)*100, digits=3)
+domain.relevent.percent.raw <- round((domain.relevantraw.variants/domain.total.variants)*100, digits=3)
+
+#Calculate uplifts
+v15.relevent.uplift.normalised <- round((v15.relevantnormalised.variants/v15.constrainedgenes.variants)*100, digits=3)
+v30.relevent.uplift.normalised <- round((v30.relevantnormalised.variants/v30.constrainedgenes.variants)*100, digits=3)
+v60.relevent.uplift.normalised <- round((v60.relevantnormalised.variants/v60.constrainedgenes.variants)*100, digits=3)
+v90.relevent.uplift.normalised <- round((v90.relevantraw.variants/v90.constrainedgenes.variants)*100, digits=3)
+exon.relevent.uplift.normalised <- round((exon.relevantraw.variants/exon.constrainedgenes.variants)*100, digits=3)
+domain.relevent.uplift.normalised <- round((domain.relevantraw.variants/domain.constrainedgenes.variants)*100, digits=3)
+
+v15.relevent.uplift.raw <- round((v15.relevantraw.variants/v15.constrainedgenes.variants)*100, digits=3)
+v30.relevent.uplift.raw <- round((v30.relevantraw.variants/v30.constrainedgenes.variants)*100, digits=3)
+v60.relevent.uplift.raw <- round((v60.relevantraw.variants/v60.constrainedgenes.variants)*100, digits=3)
+v90.relevent.uplift.raw <- round((v90.relevantraw.variants/v90.constrainedgenes.variants)*100, digits=3)
+exon.relevent.uplift.raw <- round((exon.relevantraw.variants/exon.constrainedgenes.variants)*100, digits=3)
+domain.relevent.uplift.raw <- round((domain.relevantraw.variants/domain.constrainedgenes.variants)*100, digits=3)
+
+#Write data to output table text file
+write(paste(c("Window Type","Constrained Genes","Constrained Normalised","Constrained Unnormalised","Uplift Normalised","Uplift Unnormalised"),collapse="\t"),"outputtable.txt")
+output.table.header.v15 <- "+/- 15bp"
+output.table.normalised.v15 <- paste(c(v15.relevent.percent.normalised,"% (",v15.relevantnormalised.variants,"/",v15.total.variants,")"),collapse="")
+output.table.raw.v15 <- paste(c(v15.relevent.percent.raw,"% (",v15.relevantraw.variants,"/",v15.total.variants,")"),collapse="")
+write(paste(c(output.table.header.v15,output.table.normalised.v15,output.table.raw.v15),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.header.v30 <- "+/- 30bp"
+output.table.normalised.v30 <- paste(c(v30.relevent.percent.normalised,"% (",v30.relevantnormalised.variants,"/",v30.total.variants,")"),collapse="")
+output.table.raw.v30 <- paste(c(v30.relevent.percent.raw,"% (",v30.relevantraw.variants,"/",v30.total.variants,")"),collapse="")
+write(paste(c(output.table.header.v30,output.table.normalised.v30,output.table.raw.v30),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.header.v60 <- "+/- 60bp"
+output.table.normalised.v60 <- paste(c(v60.relevent.percent.normalised,"% (",v60.relevantnormalised.variants,"/",v60.total.variants,")"),collapse="")
+output.table.raw.v60 <- paste(c(v60.relevent.percent.raw,"% (",v60.relevantraw.variants,"/",v60.total.variants,")"),collapse="")
+write(paste(c(output.table.header.v60,output.table.normalised.v60,output.table.raw.v60),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.header.v90 <- "+/- 90bp"
+output.table.normalised.v90 <- paste(c(v90.relevent.percent.normalised,"% (",v90.relevantnormalised.variants,"/",v90.total.variants,")"),collapse="")
+output.table.raw.v90 <- paste(c(v90.relevent.percent.raw,"% (",v90.relevantraw.variants,"/",v90.total.variants,")"),collapse="")
+write(paste(c(output.table.header.v90,output.table.normalised.v90,output.table.raw.v90),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.header.exon <- "Exon"
+output.table.normalised.exon <- paste(c(exon.relevent.percent.normalised,"% (",exon.relevantnormalised.variants,"/",exon.total.variants,")"),collapse="")
+output.table.raw.exon <- paste(c(exon.relevent.percent.raw,"% (",exon.relevantraw.variants,"/",exon.total.variants,")"),collapse="")
+write(paste(c(output.table.header.exon,output.table.normalised.exon,output.table.raw.exon),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.header.domain <- "Domain"
+output.table.normalised.domain <- paste(c(domain.relevent.percent.normalised,"% (",domain.relevantnormalised.variants,"/",domain.total.variants,")"),collapse="")
+output.table.raw.domain <- paste(c(domain.relevent.percent.raw,"% (",domain.relevantraw.variants,"/",domain.total.variants,")"),collapse="")
+write(paste(c(output.table.header.domain,output.table.normalised.domain,output.table.raw.domain),collapse="\t"),"outputtable.txt",append=TRUE)
