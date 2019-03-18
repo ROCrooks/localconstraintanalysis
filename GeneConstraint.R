@@ -175,6 +175,14 @@ v90.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Ty
 exon.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint >= 3.09,])
 domain.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint >= 3.09,])
 
+#Calculate the percentage of variants where gene constraint is already >3.09
+v15.constrainedgenes.percentage <- round((v15.constrainedgenes.variants/v15.total.variants)*100, digits=3)
+v30.constrainedgenes.percentage <- round((v30.constrainedgenes.variants/v30.total.variants)*100, digits=3)
+v60.constrainedgenes.percentage <- round((v60.constrainedgenes.variants/v60.total.variants)*100, digits=3)
+v90.constrainedgenes.percentage <- round((v90.constrainedgenes.variants/v90.total.variants)*100, digits=3)
+exon.constrainedgenes.percentage <- round((exon.constrainedgenes.variants/exon.total.variants)*100, digits=3)
+domain.constrainedgenes.percentage <- round((domain.constrainedgenes.variants/domain.total.variants)*100, digits=3)
+
 #Count the number of instances where a local constraint exceeds 3.09, but gene constraint doesn't
 v15.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
 v30.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
@@ -223,26 +231,45 @@ domain.relevent.uplift.raw <- round((domain.relevantraw.variants/domain.constrai
 #Write data to output table text file
 write(paste(c("Window Type","Constrained Genes","Constrained Normalised","Constrained Unnormalised","Uplift Normalised","Uplift Unnormalised"),collapse="\t"),"outputtable.txt")
 output.table.header.v15 <- "+/- 15bp"
+output.table.constrained.gene.v15 <- paste(c(v15.constrainedgenes.percentage,"% (",v15.constrainedgenes.variants,"/",v15.total.variants,")"),collapse="")
 output.table.normalised.v15 <- paste(c(v15.relevent.percent.normalised,"% (",v15.relevantnormalised.variants,"/",v15.total.variants,")"),collapse="")
 output.table.raw.v15 <- paste(c(v15.relevent.percent.raw,"% (",v15.relevantraw.variants,"/",v15.total.variants,")"),collapse="")
-write(paste(c(output.table.header.v15,output.table.normalised.v15,output.table.raw.v15),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.v15 <- paste(c(v15.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.v15 <- paste(c(v15.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.v15,output.table.constrained.gene.v15,output.table.normalised.v15,output.table.raw.v15,output.table.uplift.normalised.v15,output.table.uplift.raw.v15),collapse="\t"),"outputtable.txt",append=TRUE)
 output.table.header.v30 <- "+/- 30bp"
+output.table.constrained.gene.v30 <- paste(c(v30.constrainedgenes.percentage,"% (",v30.constrainedgenes.variants,"/",v30.total.variants,")"),collapse="")
 output.table.normalised.v30 <- paste(c(v30.relevent.percent.normalised,"% (",v30.relevantnormalised.variants,"/",v30.total.variants,")"),collapse="")
 output.table.raw.v30 <- paste(c(v30.relevent.percent.raw,"% (",v30.relevantraw.variants,"/",v30.total.variants,")"),collapse="")
-write(paste(c(output.table.header.v30,output.table.normalised.v30,output.table.raw.v30),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.v30 <- paste(c(v30.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.v30 <- paste(c(v30.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.v30,output.table.constrained.gene.v30,output.table.normalised.v30,output.table.raw.v30,output.table.uplift.normalised.v30,output.table.uplift.raw.v30),collapse="\t"),"outputtable.txt",append=TRUE)
 output.table.header.v60 <- "+/- 60bp"
+output.table.constrained.gene.v60 <- paste(c(v60.constrainedgenes.percentage,"% (",v60.constrainedgenes.variants,"/",v60.total.variants,")"),collapse="")
 output.table.normalised.v60 <- paste(c(v60.relevent.percent.normalised,"% (",v60.relevantnormalised.variants,"/",v60.total.variants,")"),collapse="")
 output.table.raw.v60 <- paste(c(v60.relevent.percent.raw,"% (",v60.relevantraw.variants,"/",v60.total.variants,")"),collapse="")
-write(paste(c(output.table.header.v60,output.table.normalised.v60,output.table.raw.v60),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.v60 <- paste(c(v60.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.v60 <- paste(c(v60.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.v60,output.table.constrained.gene.v60,output.table.normalised.v60,output.table.raw.v60,output.table.uplift.normalised.v60,output.table.uplift.raw.v60),collapse="\t"),"outputtable.txt",append=TRUE)
 output.table.header.v90 <- "+/- 90bp"
+output.table.constrained.gene.v90 <- paste(c(v90.constrainedgenes.percentage,"% (",v90.constrainedgenes.variants,"/",v90.total.variants,")"),collapse="")
 output.table.normalised.v90 <- paste(c(v90.relevent.percent.normalised,"% (",v90.relevantnormalised.variants,"/",v90.total.variants,")"),collapse="")
 output.table.raw.v90 <- paste(c(v90.relevent.percent.raw,"% (",v90.relevantraw.variants,"/",v90.total.variants,")"),collapse="")
-write(paste(c(output.table.header.v90,output.table.normalised.v90,output.table.raw.v90),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.v90 <- paste(c(v90.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.v90 <- paste(c(v90.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.v90,output.table.constrained.gene.v90,output.table.normalised.v90,output.table.raw.v90,output.table.uplift.normalised.v90,output.table.uplift.raw.v90),collapse="\t"),"outputtable.txt",append=TRUE)
 output.table.header.exon <- "Exon"
+output.table.constrained.gene.exon <- paste(c(exon.constrainedgenes.percentage,"% (",exon.constrainedgenes.variants,"/",exon.total.variants,")"),collapse="")
 output.table.normalised.exon <- paste(c(exon.relevent.percent.normalised,"% (",exon.relevantnormalised.variants,"/",exon.total.variants,")"),collapse="")
 output.table.raw.exon <- paste(c(exon.relevent.percent.raw,"% (",exon.relevantraw.variants,"/",exon.total.variants,")"),collapse="")
-write(paste(c(output.table.header.exon,output.table.normalised.exon,output.table.raw.exon),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.exon <- paste(c(exon.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.exon <- paste(c(exon.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.exon,output.table.constrained.gene.exon,output.table.normalised.exon,output.table.raw.exon,output.table.uplift.normalised.exon,output.table.uplift.raw.exon),collapse="\t"),"outputtable.txt",append=TRUE)
 output.table.header.domain <- "Domain"
+output.table.constrained.gene.domain <- paste(c(domain.constrainedgenes.percentage,"% (",domain.constrainedgenes.variants,"/",domain.total.variants,")"),collapse="")
 output.table.normalised.domain <- paste(c(domain.relevent.percent.normalised,"% (",domain.relevantnormalised.variants,"/",domain.total.variants,")"),collapse="")
 output.table.raw.domain <- paste(c(domain.relevent.percent.raw,"% (",domain.relevantraw.variants,"/",domain.total.variants,")"),collapse="")
-write(paste(c(output.table.header.domain,output.table.normalised.domain,output.table.raw.domain),collapse="\t"),"outputtable.txt",append=TRUE)
+output.table.uplift.normalised.domain <- paste(c(domain.relevent.uplift.normalised,"%"),collapse="")
+output.table.uplift.raw.domain <- paste(c(domain.relevent.uplift.raw,"%"),collapse="")
+write(paste(c(output.table.header.domain,output.table.constrained.gene.domain,output.table.normalised.domain,output.table.raw.domain,output.table.uplift.normalised.domain,output.table.uplift.raw.domain),collapse="\t"),"outputtable.txt",append=TRUE)
+
