@@ -93,6 +93,13 @@ genescangraph <- function(gene)
     [variants.data.frame['Type'] == 'S90bp' & variants.data.frame['Gene'] == gene]
     ,lwd=2,col="red"
   )
+  lines(
+    variants.data.frame[,'Position']
+    [variants.data.frame['Type'] == 'SExon' & variants.data.frame['Gene'] == gene]
+    ,variants.data.frame[,'Normalised_Constraint']
+    [variants.data.frame['Type'] == 'SExon' & variants.data.frame['Gene'] == gene]
+    ,lwd=2,col="red"
+  )
   #Draw 0 line
   abline(h=0)
   #Draw horizontal line at the 3SD line for statistical significance
@@ -118,8 +125,8 @@ window.15bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.
 window.30bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V30bp'])
 window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'])
 window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'])
-window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Exon'])
-window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Domain'])
+window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VExon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VExon'])
+window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VDomain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VDomain'])
 
 #Draw plot of local constraints at different window sizes
 png("variantslocalconstraints.png",width=1080,height=720)
@@ -128,10 +135,10 @@ par(oma=c(4,4,0,0))
 par(mar=c(2,2,1,1))
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V15bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V15bp'],"+/- 15bp")
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V30bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V30bp'],"+/- 30bp")
-variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Exon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Exon'],"Exon")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VExon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VExon'],"Exon")
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'],"+/- 60bp")
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'],"+/- 90bp")
-variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'Domain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'Domain'],"Domain")
+variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VDomain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VDomain'],"Domain")
 mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2)
 mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2)
 dev.off()
@@ -164,16 +171,16 @@ v15.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15b
 v30.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp',])
 v60.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp',])
 v90.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp',])
-exon.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon',])
-domain.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain',])
+exon.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon',])
+domain.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain',])
 
 #Count the number of variants where gene constraint is already >3.09
 v15.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint >= 3.09,])
 v30.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint >= 3.09,])
 v60.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint >= 3.09,])
 v90.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint >= 3.09,])
-exon.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint >= 3.09,])
-domain.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint >= 3.09,])
+exon.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint >= 3.09,])
+domain.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint >= 3.09,])
 
 #Calculate the percentage of variants where gene constraint is already >3.09
 v15.constrainedgenes.percentage <- round((v15.constrainedgenes.variants/v15.total.variants)*100, digits=3)
@@ -188,15 +195,15 @@ v15.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$
 v30.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
 v60.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
 v90.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
-exon.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
-domain.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+exon.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
+domain.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
                                            
 v15.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v30.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v60.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v90.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
-exon.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Exon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
-domain.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'Domain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+exon.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+domain.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 
 #Calculate percentages
 v15.relevent.percent.normalised <- round((v15.relevantnormalised.variants/v15.total.variants)*100, digits=3)
@@ -228,7 +235,7 @@ v90.relevent.uplift.raw <- round((v90.relevantraw.variants/v90.constrainedgenes.
 exon.relevent.uplift.raw <- round((exon.relevantraw.variants/exon.constrainedgenes.variants)*100, digits=3)
 domain.relevent.uplift.raw <- round((domain.relevantraw.variants/domain.constrainedgenes.variants)*100, digits=3)
 
-#Write data to output table text file
+#Write data for uplift to output table text file
 write(paste(c("Window Type","Constrained Genes","Constrained Normalised","Constrained Unnormalised","Uplift Normalised","Uplift Unnormalised"),collapse="\t"),"outputtable.txt")
 output.table.header.v15 <- "+/- 15bp"
 output.table.constrained.gene.v15 <- paste(c(v15.constrainedgenes.percentage,"% (",v15.constrainedgenes.variants,"/",v15.total.variants,")"),collapse="")
@@ -273,3 +280,17 @@ output.table.uplift.normalised.domain <- paste(c(domain.relevent.uplift.normalis
 output.table.uplift.raw.domain <- paste(c(domain.relevent.uplift.raw,"%"),collapse="")
 write(paste(c(output.table.header.domain,output.table.constrained.gene.domain,output.table.normalised.domain,output.table.raw.domain,output.table.uplift.normalised.domain,output.table.uplift.raw.domain),collapse="\t"),"outputtable.txt",append=TRUE)
 
+#Extract variant names where the local constraint made a difference to classification
+difference.v15.Normalised <- subset(variants.data.frame, Type == "V15bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+difference.v30.Normalised <- subset(variants.data.frame, Type == "V30bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+difference.v60.Normalised <- subset(variants.data.frame, Type == "V60bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+difference.v90.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+difference.Exon.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+difference.Domain.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Variant, Gene))
+
+difference.v15.Unnormalised <- subset(variants.data.frame, Type == "V15bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
+difference.v30.Unnormalised <- subset(variants.data.frame, Type == "V30bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
+difference.v60.Unnormalised <- subset(variants.data.frame, Type == "V60bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
+difference.v90.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
+difference.Exon.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
+difference.Domain.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Variant, Gene))
