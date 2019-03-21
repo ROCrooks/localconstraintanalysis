@@ -294,3 +294,23 @@ difference.v60.Unnormalised <- subset(variants.data.frame, Type == "V60bp" & Gen
 difference.v90.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
 difference.Exon.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
 difference.Domain.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
+
+titanic.data <- matrix(c(122,167,528,673,203,118,178,212), nrow = 2, byrow=TRUE, dimnames = list(c("No","Yes"), c("1st","2nd","3rd","Crew")))
+png("titantic-plot.png",width=1080,height=720)
+barplot(titanic.data,
+        main = "Frequency of Locally Constrained Variants",
+        xlab = "Type",
+        ylab = "Variants",
+        col = c("red","green"),
+        beside = TRUE
+)
+legend("topright",
+       c("Normalised","Unnormalised"),
+       fill = c("red","green")
+)
+dev.off()
+
+Class
+Survival 1st 2nd 3rd Crew
+No  122 167 528  673
+Yes 203 118 178  212
