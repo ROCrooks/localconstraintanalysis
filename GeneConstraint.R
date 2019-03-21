@@ -172,7 +172,7 @@ v30.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30b
 v60.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp',])
 v90.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp',])
 exon.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon',])
-domain.total.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain',])
+domain.total.variants <- nrow(unique(subset(variants.data.frame, Type == "VDomain", select=c(Key, VariantName))))
 
 #Count the number of variants where gene constraint is already >3.09
 v15.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint >= 3.09,])
@@ -180,7 +180,7 @@ v30.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Ty
 v60.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint >= 3.09,])
 v90.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint >= 3.09,])
 exon.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint >= 3.09,])
-domain.constrainedgenes.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint >= 3.09,])
+domain.constrainedgenes.variants <- nrow(unique(subset(variants.data.frame, Type == "VDomain" & Gene_Constraint >= 3.09, select=c(Key, VariantName))))
 
 #Calculate the percentage of variants where gene constraint is already >3.09
 v15.constrainedgenes.percentage <- round((v15.constrainedgenes.variants/v15.total.variants)*100, digits=3)
@@ -196,14 +196,14 @@ v30.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$
 v60.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
 v90.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
 exon.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
-domain.relevantnormalised.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Normalised_Constraint >= 3.09,])
-                                           
+domain.relevantnormalised.variants <- nrow(unique(subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Normalised_Constraint >= 3.09, select=c(Key, VariantName))))
+
 v15.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V15bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v30.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V30bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v60.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V60bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 v90.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'V90bp' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
 exon.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VExon' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
-domain.relevantraw.variants <- nrow(variants.data.frame[variants.data.frame$Type == 'VDomain' & variants.data.frame$Gene_Constraint < 3.09 & variants.data.frame$Raw_Constraint >= 3.09,])
+domain.relevantraw.variants <- nrow(unique(subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Raw_Constraint >= 3.09, select=c(Key, VariantName))))
 
 #Calculate percentages
 v15.relevent.percent.normalised <- round((v15.relevantnormalised.variants/v15.total.variants)*100, digits=3)
@@ -285,18 +285,35 @@ difference.v15.Normalised <- subset(variants.data.frame, Type == "V15bp" & Gene_
 difference.v30.Normalised <- subset(variants.data.frame, Type == "V30bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
 difference.v60.Normalised <- subset(variants.data.frame, Type == "V60bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
 difference.v90.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
-difference.Exon.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
-difference.Domain.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
+difference.Exon.Normalised <- subset(variants.data.frame, Type == "VExon" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
+difference.Domain.Normalised <- subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))
+difference.Domain.Normalised <- unique(difference.Domain.Normalised)
 
 difference.v15.Unnormalised <- subset(variants.data.frame, Type == "V15bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
 difference.v30.Unnormalised <- subset(variants.data.frame, Type == "V30bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
 difference.v60.Unnormalised <- subset(variants.data.frame, Type == "V60bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
 difference.v90.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
-difference.Exon.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
-difference.Domain.Unnormalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
+difference.Exon.Unnormalised <- subset(variants.data.frame, Type == "VExon" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
+difference.Domain.Unnormalised <- subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Raw_Constraint > 3.09, select=c(Key, VariantName))
+difference.Domain.Unnormalised <- unique(difference.Domain.Unnormalised)
 
-titanic.data <- matrix(c(122,167,528,673,203,118,178,212), nrow = 2, byrow=TRUE, dimnames = list(c("No","Yes"), c("1st","2nd","3rd","Crew")))
-png("titantic-plot.png",width=1080,height=720)
+#Make plot of the number of variants that are locally constrained
+typecounts <- c(
+nrow(difference.v15.Normalised),
+nrow(difference.v30.Normalised),
+nrow(difference.v60.Normalised),
+nrow(difference.v90.Normalised),
+nrow(difference.Exon.Normalised),
+nrow(difference.Domain.Normalised),
+nrow(difference.v15.Unnormalised),
+nrow(difference.v30.Unnormalised),
+nrow(difference.v60.Unnormalised),
+nrow(difference.v90.Unnormalised),
+nrow(difference.Exon.Unnormalised),
+nrow(difference.Domain.Unnormalised))
+
+titanic.data <- matrix(typecounts, nrow = 2, byrow=TRUE, dimnames = list(c("Unnormalised","Normalised"), c("+/- 15bp","+/- 30bp","+/- 60bp","+/- 90bp","Exon","Domain")))
+png("variant-counts.png",width=1080,height=720)
 barplot(titanic.data,
         main = "Frequency of Locally Constrained Variants",
         xlab = "Type",
@@ -309,8 +326,3 @@ legend("topright",
        fill = c("red","green")
 )
 dev.off()
-
-Class
-Survival 1st 2nd 3rd Crew
-No  122 167 528  673
-Yes 203 118 178  212
