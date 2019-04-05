@@ -334,4 +334,4 @@ difference.brca1.v60.Normalised <- subset(variants.data.frame, Type == "V60bp" &
 difference.brca1.v90.Normalised <- subset(variants.data.frame, Type == "V90bp" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09 & Gene == "BRCA1", select=c(Key, VariantName))
 difference.brca1.Exon.Normalised <- subset(variants.data.frame, Type == "VExon" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09 & Gene == "BRCA1", select=c(Key, VariantName))
 difference.brca1.Domain.Normalised <- subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09 & Gene == "BRCA1", select=c(Key, VariantName))
-difference.brca1.Domain.Normalised <- unique(difference.Domain.Normalised)
+difference.brca1.Domain.Normalised <- unique(difference.brca1.Domain.Normalised)
