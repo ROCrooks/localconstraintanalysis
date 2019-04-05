@@ -127,6 +127,7 @@ window.60bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.
 window.90bp.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'])
 window.exon.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VExon'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VExon'])
 window.domain.correlation <- cor(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VDomain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VDomain'])
+write(paste(c("Correlations (R2) were: 15bp = ",round(window.15bp.correlation, digits=3),", 30bp = ",round(window.30bp.correlation, digits=3),", 60bp = ",round(window.60bp.correlation, digits=3),", 90bp = ",round(window.90bp.correlation, digits=3),", within exon = ",round(window.exon.correlation, digits=3),", within domain = ",round(window.domain.correlation, digits=3)),collapse=""),"outputcorrelations.txt")
 
 #Draw plot of local constraints at different window sizes
 png("variantslocalconstraints.png",width=1080,height=720)
@@ -335,3 +336,22 @@ difference.brca1.v90.Normalised <- subset(variants.data.frame, Type == "V90bp" &
 difference.brca1.Exon.Normalised <- subset(variants.data.frame, Type == "VExon" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09 & Gene == "BRCA1", select=c(Key, VariantName))
 difference.brca1.Domain.Normalised <- subset(variants.data.frame, Type == "VDomain" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09 & Gene == "BRCA1", select=c(Key, VariantName))
 difference.brca1.Domain.Normalised <- unique(difference.brca1.Domain.Normalised)
+
+#Calculate the percentage of variants where local constraint makes a difference
+get.percent.make.difference.gene <- function(gene,variants)
+  {
+  all.variants.gene <- nrow(unique(subset(variants, Gene == gene & Type != "S15bp" & Type != "S30bp" & Type != "S60bp" & Type != "S90bp" & Type != "SExon" & Type != "SDomain", select=c(Key, VariantName))))
+  difference.variants.gene <- nrow(unique(subset(variants, Gene == gene & Type != "S15bp" & Type != "S30bp" & Type != "S60bp" & Type != "S90bp" & Type != "SExon" & Type != "SDomain" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))))
+  percent.difference.gene <- (difference.variants.gene/all.variants.gene)*100
+  percent.label = paste(c(gene," = ",difference.variants.gene,"/",all.variants.gene),collapse="")
+  #Compile metrics into vector
+  output <- c("PercentDifference"=percent.difference.gene,"Label"=percent.label)
+  return(output)
+  }
+genes.variant.difference.percentage <- unique(subset(variants.data.frame,, select=c(Gene)))
+percentage.differences <- apply(genes.variant.difference.percentage,1,get.percent.make.difference.gene,variants.data.frame)
+genes.variant.difference.percentage$PercentDiff <- as.numeric(percentage.differences['PercentDifference',])
+genes.variant.difference.percentage$Label <- percentage.differences['Label',]
+genes.variant.difference.percentage <- genes.variant.difference.percentage[order(-genes.variant.difference.percentage$PercentDiff),]
+
+#Plot chart of number of variants where local constraint makes a difference in each gene
