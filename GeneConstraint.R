@@ -312,9 +312,9 @@ nrow(difference.v90.Unnormalised),
 nrow(difference.Exon.Unnormalised),
 nrow(difference.Domain.Unnormalised))
 
-titanic.data <- matrix(typecounts, nrow = 2, byrow=TRUE, dimnames = list(c("Unnormalised","Normalised"), c("+/- 15bp","+/- 30bp","+/- 60bp","+/- 90bp","Exon","Domain")))
+variant.frequency.data <- matrix(typecounts, nrow = 2, byrow=TRUE, dimnames = list(c("Unnormalised","Normalised"), c("+/- 15bp","+/- 30bp","+/- 60bp","+/- 90bp","Exon","Domain")))
 png("variant-counts.png",width=1080,height=720)
-barplot(titanic.data,
+barplot(variant.frequency.data,
         main = "Frequency of Locally Constrained Variants",
         xlab = "Type",
         ylab = "Variants",
