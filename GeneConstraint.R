@@ -90,13 +90,16 @@ genescangraph <- function(gene)
     [variants.data.frame['Type'] == 'SExon' & variants.data.frame['Gene'] == gene]
     ,variants.data.frame[,'Normalised_Constraint']
     [variants.data.frame['Type'] == 'SExon' & variants.data.frame['Gene'] == gene]
-    ,lwd=2,col="red"
+    ,lwd=2,col="purple"
   )
   #Draw 0 line
   abline(h=0)
   #Draw horizontal line at the 3SD line for statistical significance
   abline(h=3.09)
-  legend(legend=c("15bp","30bp","60bp","90bp"),col=c("yellow","blue","green","red"),lwd=c("2","2","2","2"),lty=c(1,1,1,1),"topright")
+  #Highlight areas within domains
+  polygon(c(100, 1000), c(-10,10),
+          col = "grey30", border = NA)
+  legend(legend=c("15bp","30bp","60bp","90bp","Exon"),col=c("yellow","blue","green","red","purple"),lwd=c("2","2","2","2"),lty=c(1,1,1,1),"topright")
   dev.off()
   }
   
@@ -141,21 +144,23 @@ genescangraph("BRCA1")
 genescangraph("NF1")
 
 #Make the plot of Z score examples
-z.expected <- c(1:100)
+z.expected <- c(0:100)
 z.score <- ((z.expected*2)-z.expected)/(sqrt(z.expected))
 zexamples <- data.frame(Expected=z.expected,ZScore=z.score)
 
 #Plot graph showing that Z score increases as Observed increases
 png("zexamples.png",width=720,height=720)
 plot(
-  zexamples[,'Expected']
-  ,zexamples[,'ZScore']
-  ,type='l'
-  ,xlab='Observed Value'
-  ,ylab='Z Score'
-  ,main='Change in Z Score as Observed Increases',
+  zexamples[,'Expected'],
+  zexamples[,'ZScore'],
+  type='l',
+  xlab='Observed Value',
+  ylab='Z Score',
+  main='Change in Z Score as Observed Increases',
   xaxs = "i",
-  yaxs = "i"
+  yaxs = "i",
+  xlim = c(0,100),
+  ylim = c(0,10)
 )
 dev.off()
 
