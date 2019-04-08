@@ -410,3 +410,9 @@ legend("right",
        fill = c("red","blue","yellow","green","orange","purple")
 )
 dev.off()
+
+#Count the number not displayed for the figure legend
+not.displayed <- nrow(genes.variant.difference.percentage)-nrow(display.genes.variant.difference.percentage)
+not.displayed.percent <- (not.displayed/nrow(genes.variant.difference.percentage))*100
+text.for.not.display <- c(round(not.displayed.percent, digits = 1),"% (",not.displayed,"/",nrow(genes.variant.difference.percentage),")"," of the genes are not shown here, as they had no variants that were locally constrained, but not constrained gene wide.")
+write(paste(text.for.not.display,collapse=""),"genes-no-difference.txt")
