@@ -343,15 +343,70 @@ get.percent.make.difference.gene <- function(gene,variants)
   all.variants.gene <- nrow(unique(subset(variants, Gene == gene & Type != "S15bp" & Type != "S30bp" & Type != "S60bp" & Type != "S90bp" & Type != "SExon" & Type != "SDomain", select=c(Key, VariantName))))
   difference.variants.gene <- nrow(unique(subset(variants, Gene == gene & Type != "S15bp" & Type != "S30bp" & Type != "S60bp" & Type != "S90bp" & Type != "SExon" & Type != "SDomain" & Gene_Constraint < 3.09 & Normalised_Constraint > 3.09, select=c(Key, VariantName))))
   percent.difference.gene <- (difference.variants.gene/all.variants.gene)*100
-  percent.label = paste(c(gene," = ",difference.variants.gene,"/",all.variants.gene),collapse="")
   #Compile metrics into vector
-  output <- c("PercentDifference"=percent.difference.gene,"Label"=percent.label)
+  output <- percent.difference.gene
   return(output)
   }
-genes.variant.difference.percentage <- unique(subset(variants.data.frame,, select=c(Gene)))
-percentage.differences <- apply(genes.variant.difference.percentage,1,get.percent.make.difference.gene,variants.data.frame)
-genes.variant.difference.percentage$PercentDiff <- as.numeric(percentage.differences['PercentDifference',])
-genes.variant.difference.percentage$Label <- percentage.differences['Label',]
-genes.variant.difference.percentage <- genes.variant.difference.percentage[order(-genes.variant.difference.percentage$PercentDiff),]
+unique.genes <- unique(subset(variants.data.frame,, select=c(Gene)))
+percentage.differences <- apply(unique.genes,1,get.percent.make.difference.gene,variants.data.frame)
+genes.variant.difference.percentage <- data.frame(Gene=unique.genes,PercentDiff=percentage.differences)
 
-#Plot chart of number of variants where local constraint makes a difference in each gene
+#Data to display on bar plot
+display.genes.variant.difference.percentage <- subset(genes.variant.difference.percentage, PercentDiff > 0, select=c(Gene, PercentDiff))
+#Colors of bars based on the panel
+display.genes.variant.difference.percentage$Color <- c(
+  "red",
+  "blue",
+  "blue",
+  "blue",
+  "yellow",
+  "red",
+  "yellow",
+  "blue",
+  "blue",
+  "yellow",
+  "yellow",
+  "yellow",
+  "yellow",
+  "yellow",
+  "yellow",
+  "blue",
+  "yellow",
+  "yellow",
+  "yellow",
+  "yellow",
+  "green",
+  "green",
+  "orange",
+  "orange",
+  "yellow",
+  "yellow",
+  "yellow",
+  "purple",
+  "green",
+  "blue",
+  "green",
+  "yellow",
+  "yellow",
+  "yellow",
+  "yellow")
+display.genes.variant.difference.percentage <- display.genes.variant.difference.percentage[order(display.genes.variant.difference.percentage$PercentDiff),]
+
+#Display chart of % of variants in each gene where local constraint makes a difference
+png("gene-make-difference.png",width=1080,height=720)
+par(mar=c(4,6.5,2,1))
+barplot(
+  display.genes.variant.difference.percentage$PercentDiff, 
+  names.arg = display.genes.variant.difference.percentage$Gene,
+  col = display.genes.variant.difference.percentage$Color,
+  horiz = TRUE,
+  xlim = c(0,100),
+  xlab = "Percentage of Variants",
+  las = 1,
+  xaxs = "i",
+  yaxs = "i")
+legend("right",
+       c("Breast Cancer","Aortopathy","DSD","Noonan","Lynch","Ovarian Cancer"),
+       fill = c("red","blue","yellow","green","orange","purple")
+)
+dev.off()
