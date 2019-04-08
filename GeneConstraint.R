@@ -48,12 +48,28 @@ variantgraph <- function(x,y,name)
 genescangraph <- function(gene)
   {
   #Declare file name
-  filename = paste(c(gene,"scan.png"),sep="",collapse="")
-  title = paste(c(gene," Regional Constraint Scan"),sep="",collapse="")
+  filename <- paste(c(gene,"scan.png"),sep="",collapse="")
+  title <- paste(c(gene," Regional Constraint Scan"),sep="",collapse="")
   
+  #Define domain boundaries according to gene
+  if (gene == "BRCA1")
+    {
+    domain.starts <- c(4924,5266)
+    domain.ends <- c(5208,5565)
+    }
+  else if (gene == "NF1")
+    {
+    domain.starts <- c(3703,4738)
+    domain.ends <- c(4353,5214)
+    }
   #Draw gene scan plot of BRCA1
   png(filename,width=1080,height=720)
   plot(
+    #Highlight areas within domains
+    panel.first = rect(domain.starts, -1e6, domain.ends, 1e6, col='grey70', border=NA),
+    xaxs = "i",
+    yaxs = "i",
+    
     variants.data.frame[,'Position']
     [variants.data.frame['Type'] == 'S15bp' & variants.data.frame['Gene'] == gene]
     ,variants.data.frame[,'Normalised_Constraint']
@@ -96,9 +112,6 @@ genescangraph <- function(gene)
   abline(h=0)
   #Draw horizontal line at the 3SD line for statistical significance
   abline(h=3.09)
-  #Highlight areas within domains
-  polygon(c(100, 1000), c(-10,10),
-          col = "grey30", border = NA)
   legend(legend=c("15bp","30bp","60bp","90bp","Exon"),col=c("yellow","blue","green","red","purple"),lwd=c("2","2","2","2"),lty=c(1,1,1,1),"topright")
   dev.off()
   }
