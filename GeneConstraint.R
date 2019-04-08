@@ -38,14 +38,6 @@ variants.processing.function <- function(variant,genedetails)
   return(output)
   }
 
-#Generate an example of a Z score
-examplezscores <- function(value)
-  {
-  double = value*2
-  zscore = value-double/sqrt(double)
-  return(zscore)
-  }
-
 #Generate a gene vs regional variant graph
 variantgraph <- function(x,y,name)
   {
@@ -149,21 +141,21 @@ genescangraph("BRCA1")
 genescangraph("NF1")
 
 #Make the plot of Z score examples
-size = 100
-zexamples <- data.frame(row.names=c(1:size))
-zexamples$values <- c(1:size)
-zscores <- apply(zexamples,1,examplezscores)
-zexamples$zscore <- zscores
+z.expected <- c(1:100)
+z.score <- ((z.expected*2)-z.expected)/(sqrt(z.expected))
+zexamples <- data.frame(Expected=z.expected,ZScore=z.score)
 
 #Plot graph showing that Z score increases as Observed increases
 png("zexamples.png",width=720,height=720)
 plot(
-  zexamples[,'values']
-  ,zexamples[,'zscore']
+  zexamples[,'Expected']
+  ,zexamples[,'ZScore']
   ,type='l'
   ,xlab='Observed Value'
   ,ylab='Z Score'
-  ,main='Change in Z Score as Observed Increases'
+  ,main='Change in Z Score as Observed Increases',
+  xaxs = "i",
+  yaxs = "i"
 )
 dev.off()
 
