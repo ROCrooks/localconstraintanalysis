@@ -41,7 +41,7 @@ variants.processing.function <- function(variant,genedetails)
 #Generate a gene vs regional variant graph
 variantgraph <- function(x,y,name)
   {
-  plot(x,y,xlab='',ylab='',main=name)
+  plot(x,y,xlab='',ylab='',main=name,cex.main=1.5)
   }
 
 #Draw gene scan plot
@@ -77,7 +77,7 @@ genescangraph <- function(gene)
     ,type='l'
     ,xlab='Position'
     ,ylab='Local Constraint'
-    ,main=title
+    ,cex.lab = 1.5
     ,lwd=2,col="yellow"
   )
   lines(
@@ -148,8 +148,8 @@ variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type']
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V60bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V60bp'],"+/- 60bp")
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'V90bp'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'V90bp'],"+/- 90bp")
 variantgraph(variants.data.frame[,'Gene_Constraint'][variants.data.frame['Type'] == 'VDomain'],variants.data.frame[,'Normalised_Constraint'][variants.data.frame['Type'] == 'VDomain'],"Domain")
-mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2)
-mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2)
+mtext('Gene Constraint Score',side = 1, outer = TRUE, line = 2, cex=1.5)
+mtext('Regional Constraint Score',side = 2, outer = TRUE, line = 2, cex=1.5)
 dev.off()
 
 #Make th gene scan plots for BRCA1 and NF1
@@ -169,9 +169,9 @@ plot(
   type='l',
   xlab='Observed Value',
   ylab='Z Score',
-  main='Change in Z Score as Observed Increases',
   xaxs = "i",
   yaxs = "i",
+  cex.lab = 1.5,
   xlim = c(0,100),
   ylim = c(0,10)
 )
@@ -326,11 +326,11 @@ nrow(difference.Domain.Unnormalised))
 variant.frequency.data <- matrix(typecounts, nrow = 2, byrow=TRUE, dimnames = list(c("Unnormalised","Normalised"), c("+/- 15bp","+/- 30bp","+/- 60bp","+/- 90bp","Exon","Domain")))
 png("variant-counts.png",width=1080,height=720)
 barplot(variant.frequency.data,
-        main = "Frequency of Locally Constrained Variants",
         xlab = "Type",
         ylab = "Variants",
         col = c("red","green"),
-        beside = TRUE
+        beside = TRUE,
+        cex.lab = 1.5
 )
 legend("topright",
        c("Normalised","Unnormalised"),
@@ -404,14 +404,14 @@ display.genes.variant.difference.percentage <- display.genes.variant.difference.
 
 #Display chart of % of variants in each gene where local constraint makes a difference
 png("gene-make-difference.png",width=1080,height=720)
-par(mar=c(4,6.5,2,1))
+par(mar=c(4,7.5,2,1))
 barplot(
   display.genes.variant.difference.percentage$PercentDiff, 
   names.arg = display.genes.variant.difference.percentage$Gene,
   col = display.genes.variant.difference.percentage$Color,
   horiz = TRUE,
   xlim = c(0,100),
-  xlab = "Percentage of Variants",
+  ann = FALSE,
   las = 1,
   xaxs = "i",
   yaxs = "i")
@@ -419,6 +419,8 @@ legend("right",
        c("Breast Cancer","Aortopathy","DSD","Noonan","Lynch","Ovarian Cancer"),
        fill = c("red","blue","yellow","green","orange","purple")
 )
+mtext(side = 1, text = "Gene", line = 2, cex = 1.5)
+mtext(side = 2, text = "Percentage of Variants", line = 6, cex = 1.5)
 dev.off()
 
 #Count the number not displayed for the figure legend
@@ -433,11 +435,12 @@ subset.uscores.data.frame <- subset(uscores.data.frame,Nucleotide >= 600 & Nucle
 png("uscores.png",width=1080,height=720)
 par(mar=c(4,4,4,4))
 plot(uscores.data.frame$Nucleotide,uscores.data.frame$UScore,type="h",col="blue",
-     xlab="Nucleotide in BRCA1",
-     ylab="U Score",
+     ann = FALSE,
      xaxs = "i",
      yaxs = "i")
 lines(subset.uscores.data.frame$Nucleotide,subset.uscores.data.frame$UScore,type="h",col="red")
+mtext(side = 1, text = "Nucleotide in BRCA1", line = 3, cex = 1.5)
+mtext(side = 2, text = "U Score", line = 2, cex = 1.5)
 dev.off()
 
 #Calculate number of variants expected in the subset and return it to text file
@@ -453,16 +456,19 @@ boxplot.data.frame <- subset(variants.data.frame,Type == "V15bp" | Type == "V30b
 genes.constraint <- unique(subset(variants.data.frame,,c(Gene,Gene_Constraint)))
 boxplot.lims = c(-10,10)
 png("boxwhisker-normalised.png",width=1080,height=720)
-par(mar=c(7,4,1,4))
+par(mar=c(8,4,1,4))
 boxplot(boxplot.data.frame$Normalised_Constraint~boxplot.data.frame$Gene,
         outline=FALSE,
         ylim = boxplot.lims,
         xaxs = "i",
         yaxs = "i",
+        ann = FALSE,
         las = 2,
         col="yellow",
         medcol="red"
         )
+mtext(side = 1, text = "Gene", line = 6, cex = 1.5)
+mtext(side = 2, text = "Local Constraint (Normalised)", line = 2, cex = 1.5)
 abline(h=0)
 abline(h=3.09)
 par(new=T)
@@ -477,16 +483,21 @@ dev.off()
 
 boxplot.lims = c(-5,5)
 png("boxwhisker-raw.png",width=1080,height=720)
-par(mar=c(7,4,1,4))
+par(mar=c(8,4,1,4))
 boxplot(boxplot.data.frame$Raw_Constraint~boxplot.data.frame$Gene,
         outline=FALSE,
         ylim = boxplot.lims,
         xaxs = "i",
         yaxs = "i",
+        #xlab = "Gene",
+        #ylab = "Local Constraint (Normalized)",
+        ann = FALSE,
         las = 2,
         col="yellow",
         medcol="red"
 )
+mtext(side = 1, text = "Gene", line = 6, cex = 1.5)
+mtext(side = 2, text = "Local Constraint (Normalised)", line = 2, cex = 1.5)
 abline(h=0)
 abline(h=3.09)
 par(new=T)
