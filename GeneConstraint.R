@@ -426,3 +426,24 @@ not.displayed <- nrow(genes.variant.difference.percentage)-nrow(display.genes.va
 not.displayed.percent <- (not.displayed/nrow(genes.variant.difference.percentage))*100
 text.for.not.display <- c(round(not.displayed.percent, digits = 1),"% (",not.displayed,"/",nrow(genes.variant.difference.percentage),")"," of the genes are not shown here, as they had no variants that were locally constrained, but not constrained gene wide.")
 write(paste(text.for.not.display,collapse=""),"genes-no-difference.txt")
+
+#Make U scores graph
+uscores.data.frame <- read.table("uscores.txt", header=TRUE)
+subset.uscores.data.frame <- subset(uscores.data.frame,Nucleotide >= 600 & Nucleotide <= 800, select=c(Nucleotide, UScore))
+png("uscores.png",width=1080,height=720)
+par(mar=c(4,4,4,4))
+plot(uscores.data.frame$Nucleotide,uscores.data.frame$UScore,type="h",col="blue",
+     xlab="Nucleotide in BRCA1",
+     ylab="U Score",
+     xaxs = "i",
+     yaxs = "i")
+lines(subset.uscores.data.frame$Nucleotide,subset.uscores.data.frame$UScore,type="h",col="red")
+dev.off()
+
+#Calculate number of variants expected in the subset and return it to text file
+total.uscore <- sum(uscores.data.frame$UScore)
+subset.uscore <- sum(subset.uscores.data.frame$UScore)
+percentage.uscore <- (subset.uscore/total.uscore)*100
+total.expected <- 508.9
+subset.expected <- (total.expected/100)*percentage.uscore
+write(paste(c("as the percentage of the area under the curve found between nucleotides 600 and 800 is ",round(percentage.uscore,digits=2),"%, and the total expected number of variants in ExAc is ",total.expected,", the number of variants expected to fall in the region between 600 and 800 is ",round(subset.expected,digits=1)),collapse=""),"uscoreexplain.txt")
