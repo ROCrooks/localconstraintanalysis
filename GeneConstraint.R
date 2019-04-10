@@ -447,3 +447,54 @@ percentage.uscore <- (subset.uscore/total.uscore)*100
 total.expected <- 508.9
 subset.expected <- (total.expected/100)*percentage.uscore
 write(paste(c("as the percentage of the area under the curve found between nucleotides 600 and 800 is ",round(percentage.uscore,digits=2),"%, and the total expected number of variants in ExAc is ",total.expected,", the number of variants expected to fall in the region between 600 and 800 is ",round(subset.expected,digits=1)),collapse=""),"uscoreexplain.txt")
+
+#Boxplot of local constraint variability
+boxplot.data.frame <- subset(variants.data.frame,Type == "V15bp" | Type == "V30bp" | Type == "V60bp" | Type == "V90bp" | Type == "VExon" | Type == "VDomain",select=c(Gene,Raw_Constraint,Normalised_Constraint))
+genes.constraint <- unique(subset(variants.data.frame,,c(Gene,Gene_Constraint)))
+boxplot.lims = c(-10,10)
+png("boxwhisker-normalised.png",width=1080,height=720)
+par(mar=c(7,4,1,4))
+boxplot(boxplot.data.frame$Normalised_Constraint~boxplot.data.frame$Gene,
+        outline=FALSE,
+        ylim = boxplot.lims,
+        xaxs = "i",
+        yaxs = "i",
+        las = 2,
+        col="yellow",
+        medcol="red"
+        )
+abline(h=0)
+abline(h=3.09)
+par(new=T)
+plot(genes.constraint$Gene,genes.constraint$Gene_Constraint,
+     ylim = boxplot.lims,
+     xaxs = "i",
+     yaxs = "i",
+     xaxt = "n",
+     yaxt = "n"
+)
+dev.off()
+
+boxplot.lims = c(-5,5)
+png("boxwhisker-raw.png",width=1080,height=720)
+par(mar=c(7,4,1,4))
+boxplot(boxplot.data.frame$Raw_Constraint~boxplot.data.frame$Gene,
+        outline=FALSE,
+        ylim = boxplot.lims,
+        xaxs = "i",
+        yaxs = "i",
+        las = 2,
+        col="yellow",
+        medcol="red"
+)
+abline(h=0)
+abline(h=3.09)
+par(new=T)
+plot(genes.constraint$Gene,genes.constraint$Gene_Constraint,
+     ylim = boxplot.lims,
+     xaxs = "i",
+     yaxs = "i",
+     xaxt = "n",
+     yaxt = "n"
+)
+dev.off()
