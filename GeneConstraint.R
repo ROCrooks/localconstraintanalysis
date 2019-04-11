@@ -419,8 +419,8 @@ legend("right",
        c("Breast Cancer","Aortopathy","DSD","Noonan","Lynch","Ovarian Cancer"),
        fill = c("red","blue","yellow","green","orange","purple")
 )
-mtext(side = 1, text = "Gene", line = 2, cex = 1.5)
-mtext(side = 2, text = "Percentage of Variants", line = 6, cex = 1.5)
+mtext(side = 1, text = "Percentage of Variants", line = 2, cex = 1.5)
+mtext(side = 2, text = "Gene", line = 6, cex = 1.5)
 dev.off()
 
 #Count the number not displayed for the figure legend
